@@ -47,44 +47,52 @@ impl Map {
 
                 // Check if the position above poi is possible
                 0 => {
-                    if poi.y > 0 && (self.get_poi(poi.y-1, poi.x).height as i32 - poi.height as i32 == 1 ||
-                                     self.get_poi(poi.y-1, poi.x).height as i32 - poi.height as i32 == 0) &&
+                    println!("top");
+                    if poi.y > 0 && self.get_poi(poi.y-1, poi.x).height as i32 - poi.height as i32 <= 1 &&
                     self.get_poi(poi.y-1, poi.x).mark != DONE_MARK {
+                        println!("True");
                         true
                     } else {
+                        println!("False");
                         false
                     }
                 },
                 
                 // Check if the position to the right of poi is possible
                 1 => {
-                    if poi.y > 0 && (self.get_poi(poi.y, poi.x+1).height as i32 - poi.height as i32 == 1 ||
-                                     self.get_poi(poi.y, poi.x+1).height as i32 - poi.height as i32 == 0) &&
+                    println!("right");
+                    if poi.x < self.map[0].len()-1 && self.get_poi(poi.y, poi.x+1).height as i32 - poi.height as i32 <= 1 &&
                     self.get_poi(poi.y, poi.x+1).mark != DONE_MARK {
+                        println!("True");
                         true
                     } else {
+                        println!("False");
                         false
                     }
                 },
 
                 // Check if the position below poi is possible
                 2 => {
-                    if poi.y > 0 && (self.get_poi(poi.y+1, poi.x).height as i32 - poi.height as i32 == 1 ||
-                                     self.get_poi(poi.y+1, poi.x).height as i32 - poi.height as i32 == 0) && 
+                    println!("bottom");
+                    if poi.y < self.map.len()-1 && self.get_poi(poi.y+1, poi.x).height as i32 - poi.height as i32 <= 1 &&
                     self.get_poi(poi.y+1, poi.x).mark != DONE_MARK {
+                        println!("True");
                         true
                     } else {
+                        println!("False");
                         false
                     }
                 },
                 
                 // Check if the position to the left of poi is possible
                 3 => {
-                    if poi.y > 0 && (self.get_poi(poi.y, (poi.x as i32 - 1) as usize).height as i32 - poi.height as i32 == 1 ||
-                                     self.get_poi(poi.y, (poi.x as i32 - 1) as usize).height as i32 - poi.height as i32 == 0) && 
-                        self.get_poi(poi.y, poi.x-1).mark != DONE_MARK {
+                    println!("left");
+                    if poi.x > 0 && self.get_poi(poi.y, poi.x-1).height as i32 - poi.height as i32 <= 1 &&
+                    self.get_poi(poi.y, poi.x-1).mark != DONE_MARK {
+                        println!("True");
                         true
                     } else {
+                        println!("False");
                         false
                     }
                 },
@@ -95,6 +103,7 @@ impl Map {
 
             i += 1;
         }
+        println!("results: {:?}", results);
         results
     }
     
@@ -154,6 +163,18 @@ fn main() {
     // Somewhere loop through paths and set each one's mark to DONE_MARK
     let mut is_found = false;
     'is_found_loop: while !is_found {
+        for row in &map.map {
+            let mut row_str = String::new();
+            for character in row {
+                row_str.push(character.mark);
+            }
+            println!("{}", row_str);
+        }
+
+        if paths.len() == 0 {
+            panic!("paths.len == 0 :O either there's a bug... or there is no more moves possible and the map is impossible!");
+        }
+
         for path in &paths {
             map.set_mark(path.poi.y, path.poi.x, DONE_MARK);
             println!("Set mark DONE_MARK for {:?}", path);
